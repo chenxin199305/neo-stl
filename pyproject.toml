@@ -1,0 +1,17 @@
+[project]
+name = "neo-stl"
+version = "0.0.1"
+description = "STL command tool for Neo project"
+authors = [
+    { name = "Xin Chen", email = "chenxin199305@163.com" },
+]
+requires-python = "==3.11.*"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "open3d",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
