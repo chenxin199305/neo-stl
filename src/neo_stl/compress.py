@@ -49,8 +49,10 @@ def compress(
         compress_open3d(
             file_path=file_path,
             output_dir_path=output_path,
-            target_reduce_ratio=target_reduce_ratio,
+            target_reduce_ratio=0.35,
             target_triangle_count=target_triangle_count,
+            max_mesh_file_size=4.5,
+            min_mesh_triangle_count=min_mesh_triangle_count,
         )
 
 

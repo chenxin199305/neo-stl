@@ -31,7 +31,11 @@ def compress_open3d(
         max_mesh_file_size = 1.0  # in MB
 
     if current_mesh_file_size < max_mesh_file_size:
-        print(f"File {file_path} is small enough, directly copy...")
+        print(f"File {file_path} is small enough, larger the reduction ratio...")
+        target_reduce_ratio = 0.75
+
+    if current_mesh_file_size < 1.0:  # 1MB
+        print(f"File {file_path} is small enough, larger the reduction ratio...")
         target_reduce_ratio = 1.0
 
     # check if mesh triangle count is small enough, if so, skip
@@ -39,7 +43,7 @@ def compress_open3d(
         min_mesh_triangle_count = 1000
 
     if current_mesh_triangle_count < min_mesh_triangle_count:
-        print(f"File {file_path} is small enough, directly copy...")
+        print(f"File {file_path} is small enough, larger the reduction ratio...")
         target_reduce_ratio = 1.0
 
     # --------------------------------------------------
@@ -62,7 +66,7 @@ def compress_open3d(
 
     # --------------------------------------------------
 
-    simplified_mesh = simplify_smooth(
+    simplified_mesh = simplify(
         mesh=mesh,
         target_triangles=simplified_mesh_triangle_count,
     )

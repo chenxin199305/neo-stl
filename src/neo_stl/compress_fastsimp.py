@@ -23,7 +23,7 @@ def compress_fastsimp(
 
     # 确定压缩比
     if target_reduce_ratio is None:
-        target_reduce_ratio = 0.50  # default reduce ratio
+        target_reduce_ratio = 0.30  # default reduce ratio
     else:
         pass
 
