@@ -99,7 +99,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="STL Compressor")
     parser.add_argument("--input", type=str, required=True, help="Path to the input STL files.")
     parser.add_argument("--output", type=str, required=True, help="Path to the output directory.")
-    parser.add_argument("--target_triangle_count", type=int, default=None, help="Target number of triangles.")
+    parser.add_argument("--target_triangle", type=int, default=None, help="Target number of triangles.")
+    parser.add_argument("--reduce_ratio", type=float, default=None, help="Target reduce ratio.")
+    parser.add_argument("--max_mesh_file_size", type=float, default=None, help="Max mesh file size in MB.")
+    parser.add_argument("--min_mesh_triangle_count", type=int, default=None, help="Min mesh triangle count.")
 
     # parse the arguments
     args = parser.parse_args()
@@ -113,4 +116,11 @@ if __name__ == "__main__":
         os.makedirs(args.output)
 
     # compress the STL files
-    compress(args.input, args.output, args.target_triangle_count)
+    compress(
+        input_path=args.input,
+        output_path=args.output,
+        target_triangle_count=args.target_triangle,
+        target_reduce_ratio=args.reduce_ratio,
+        max_mesh_file_size=args.max_mesh_file_size,
+        min_mesh_triangle_count=args.min_mesh_triangle_count,
+    )
