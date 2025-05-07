@@ -1,6 +1,6 @@
 # neo-stl
 
-STL tool, command tool of the Nexus project
+STL tool, command tool of the Neo project
 
 ## Setup
 
