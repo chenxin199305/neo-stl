@@ -4,7 +4,24 @@ import tqdm
 import open3d
 
 
-def compress(input_path, output_path, target_triangles):
+def compress(
+        input_path,
+        output_path,
+        target_triangle_count=None,
+        target_reduce_ratio=None,
+        max_mesh_file_size=None,
+        min_mesh_triangle_count=None,
+) -> None:
+    """
+
+    :param input_path:
+    :param output_path:
+    :param target_triangle_count:
+    :param max_mesh_file_size:
+    :param min_mesh_triangle_count:
+    :return None:
+    """
+
     # check input path is folder or file
     if os.path.isdir(input_path):
         # If input path is a directory, get all STL files in the directory
@@ -26,7 +43,50 @@ def compress(input_path, output_path, target_triangles):
     for i, file_path in enumerate(files):
         mesh = open3d.io.read_triangle_mesh(file_path)
 
-        simplified_mesh = mesh.simplify_quadric_decimation(target_triangles)
+        # --------------------------------------------------
+        # Auto Resize Mesh Size
+
+        # get current mesh file size
+        current_mesh_file_size = os.path.getsize(file_path) / (1024 * 1024)  # in MB
+
+        # get current mesh triangle count
+        current_mesh_triangle_count = len(mesh.triangles)
+
+        # check if mesh file is small enough, if so, skip
+        if max_mesh_file_size is None:
+            max_mesh_file_size = 1.  # in MB
+
+        if current_mesh_file_size < max_mesh_file_size:
+            print(f"File {file_path} is small enough, skipping...")
+            continue
+
+        # check if mesh triangle count is small enough, if so, skip
+        if min_mesh_triangle_count is None:
+            min_mesh_triangle_count = 1000
+
+        if current_mesh_triangle_count < min_mesh_triangle_count:
+            print(f"File {file_path} is small enough, skipping...")
+            continue
+
+        # --------------------------------------------------
+        # Two Factors affect the resize process
+        simplified_mesh_triangle_count = 0
+
+        if target_reduce_ratio is None:
+            target_reduce_ratio = 0.1
+        else:
+            pass
+
+        simplified_mesh_triangle_count = target_reduce_ratio * current_mesh_triangle_count
+
+        if target_triangle_count is None:
+            pass
+        else:
+            simplified_mesh_triangle_count = target_triangle_count
+
+        # --------------------------------------------------
+
+        simplified_mesh = mesh.simplify_quadric_decimation(simplified_mesh_triangle_count)
         simplified_mesh.compute_triangle_normals()
         simplified_mesh.compute_vertex_normals()
 
@@ -39,7 +99,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="STL Compressor")
     parser.add_argument("--input", type=str, required=True, help="Path to the input STL files.")
     parser.add_argument("--output", type=str, required=True, help="Path to the output directory.")
-    parser.add_argument("--target_triangles", type=int, default=1000, help="Target number of triangles.")
+    parser.add_argument("--target_triangle_count", type=int, default=None, help="Target number of triangles.")
 
     # parse the arguments
     args = parser.parse_args()
@@ -53,4 +113,4 @@ if __name__ == "__main__":
         os.makedirs(args.output)
 
     # compress the STL files
-    compress(args.input, args.output, args.target_triangles)
+    compress(args.input, args.output, args.target_triangle_count)
